@@ -1,33 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import Context from '../context/Context';
+import FilterName from './FilterName';
+import FilterNumeric from './FilterNumeric';
 
 function Table() {
-  const { planetsFilterName, handleFilterName } = useContext(Context);
-
-  const [filter, setFilter] = useState({
-    filterByName: {
-      name: '',
-    },
-  });
-
-  const handleChange = ({ target: { value } }) => {
-    setFilter({
-      filterByName: {
-        name: value,
-      },
-    });
-    handleFilterName(value);
-  };
+  const { planetsFilterName } = useContext(Context);
 
   return (
     <section>
-      <input
-        type="text"
-        data-testid="name-filter"
-        placeholder="Search by name"
-        onChange={ handleChange }
-        value={ filter.filterByName.name }
-      />
+      <FilterName />
+      <FilterNumeric />
       <table>
         <thead>
           <tr>
