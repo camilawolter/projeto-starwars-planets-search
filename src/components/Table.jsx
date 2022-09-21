@@ -4,7 +4,7 @@ import FilterName from './FilterName';
 import FilterNumeric from './FilterNumeric';
 
 function Table() {
-  const { planetsFilterName } = useContext(Context);
+  const { planetsFilter } = useContext(Context);
 
   return (
     <section>
@@ -29,7 +29,7 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          {planetsFilterName.map(({
+          {planetsFilter.map(({
             name,
             rotation_period: rotationPeriod,
             orbital_period: orbitalPeriod,

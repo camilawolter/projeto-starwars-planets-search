@@ -5,7 +5,7 @@ import fetchPlanetsAPI from '../services';
 
 const Provider = ({ children }) => {
   const [planets, setPlanets] = useState([]);
-  const [planetsFilterName, setPlanetsFilterName] = useState([]);
+  const [planetsFilter, setPlanetsFilter] = useState([]);
   const [planetsFilterNumeric, setPlanetsFilterNumeric] = useState({
     filterByNumericValues: [],
   });
@@ -18,17 +18,17 @@ const Provider = ({ children }) => {
         return planet;
       });
       setPlanets(newArrayPlanets);
-      setPlanetsFilterName(newArrayPlanets);
+      setPlanetsFilter(newArrayPlanets);
     };
     getPlanets();
   }, []);
 
   const handleFilterName = (name) => {
-    if (name === '') setPlanetsFilterName(planets);
+    if (name === '') setPlanetsFilter(planets);
     const filter = planets.filter((planet) => (
       planet.name.toLowerCase().includes(name.toLowerCase())
     ));
-    setPlanetsFilterName(filter);
+    setPlanetsFilter(filter);
   };
 
   const handleFilterNumeric = ({ column, comparison, value }) => {
@@ -38,7 +38,7 @@ const Provider = ({ children }) => {
         { column, comparison, value },
       ],
     }));
-    const filter = planetsFilterName.filter((planet) => {
+    const filter = planetsFilter.filter((planet) => {
       switch (comparison) {
       case 'maior que':
         return Number(planet[column]) > value;
@@ -50,12 +50,12 @@ const Provider = ({ children }) => {
         return false;
       }
     });
-    setPlanetsFilterName(filter);
+    setPlanetsFilter(filter);
   };
 
   const context = {
     planets,
-    planetsFilterName,
+    planetsFilter,
     handleFilterName,
     planetsFilterNumeric,
     handleFilterNumeric,
