@@ -12,6 +12,14 @@ function FilterNumeric() {
     value: 0,
   });
 
+  const [columns, setColumns] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ]);
+
   const handleNumeric = ({ target: { value: valueFilter, name } }) => {
     setFilterNum((prevState) => ({
       ...prevState,
@@ -19,9 +27,19 @@ function FilterNumeric() {
     }));
   };
 
+  const optionsColumn = () => {
+    const mapColumn = filterByNumericValues.map((filter) => filter.column);
+    const columnsFilter = columns.filter((filterColumn) => !mapColumn
+      .some((column) => column === filterColumn));
+    return columnsFilter
+      .map((column, index) => <option key={ index }>{column}</option>);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     handleFilterNumeric(filterNumeric);
+    const arrayColumns = columns.filter((column) => column !== filterNumeric.column);
+    setColumns(arrayColumns);
   };
 
   return (
@@ -33,11 +51,9 @@ function FilterNumeric() {
           name="column"
           defaultValue={ filterNumeric.column }
         >
-          <option>population</option>
-          <option>orbital_period</option>
-          <option>diameter</option>
-          <option>rotation_period</option>
-          <option>surface_water</option>
+          {
+            optionsColumn()
+          }
         </select>
         <select
           data-testid="comparison-filter"
