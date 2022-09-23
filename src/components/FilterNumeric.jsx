@@ -4,7 +4,9 @@ import Context from '../context/Context';
 function FilterNumeric() {
   const {
     planetsFilterNumeric: { filterByNumericValues },
-    handleFilterNumeric } = useContext(Context);
+    handleFilterNumeric,
+    removeAll,
+    removeFilters } = useContext(Context);
 
   const [filterNumeric, setFilterNum] = useState({
     column: 'population',
@@ -40,6 +42,21 @@ function FilterNumeric() {
     handleFilterNumeric(filterNumeric);
     const arrayColumns = columns.filter((column) => column !== filterNumeric.column);
     setColumns(arrayColumns);
+    setFilterNum({
+      column: arrayColumns[0],
+      comparison: 'maior que',
+      value: 0,
+    });
+  };
+
+  const removeFilter = ({ column: removed, comparison, value }) => {
+    setColumns((prev) => ([...prev, removed]));
+    setFilterNum({ column: removed, comparison: 'maior que', value: 0 });
+    removeFilters({ removed, comparison, value });
+  };
+
+  const removeAllFilters = () => {
+    removeAll(filterByNumericValues);
   };
 
   return (
@@ -74,12 +91,27 @@ function FilterNumeric() {
         />
         <button type="submit" data-testid="button-filter">Filtrar </button>
       </form>
+
+      <button
+        type="button"
+        data-testid="button-remove-filters"
+        onClick={ () => removeAllFilters() }
+      >
+        Remover Todos os Filtros
+      </button>
+
       {
-        filterByNumericValues.map(({ column, comparison, value }, index) => (
-          <div key={ index }>
+        filterByNumericValues.map((values, index) => (
+          <div key={ index } data-testid="filter">
             {
-              `${column} ${comparison} ${value}`
+              `${values.column} ${values.comparison} ${values.value}`
             }
+            <button
+              type="button"
+              onClick={ () => removeFilter(values) }
+            >
+              Remover
+            </button>
           </div>
         ))
       }

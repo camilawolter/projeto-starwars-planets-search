@@ -9,6 +9,7 @@ const Provider = ({ children }) => {
   const [planetsFilterNumeric, setPlanetsFilterNumeric] = useState({
     filterByNumericValues: [],
   });
+  const [newArray] = useState([]);
 
   useEffect(() => {
     const getPlanets = async () => {
@@ -53,12 +54,35 @@ const Provider = ({ children }) => {
     setPlanetsFilter(filter);
   };
 
+  const removeFilters = ({ removed }) => {
+    setPlanetsFilterNumeric((prev) => ({
+      filterByNumericValues: [
+        ...prev.filterByNumericValues.filter(({ column }) => column !== removed),
+      ],
+    }));
+    let arrayCopy = [...newArray];
+    if (arrayCopy.length === 0) arrayCopy = [...planets];
+    setPlanetsFilter(arrayCopy);
+  };
+
+  const removeAll = () => {
+    setPlanetsFilterNumeric((prevState) => ({
+      ...prevState,
+      filterByNumericValues: [],
+    }));
+    let arrayCopy = [...newArray];
+    if (arrayCopy.length === 0) arrayCopy = [...planets];
+    setPlanetsFilter(arrayCopy);
+  };
+
   const context = {
     planets,
     planetsFilter,
     handleFilterName,
     planetsFilterNumeric,
     handleFilterNumeric,
+    removeAll,
+    removeFilters,
   };
 
   return (
