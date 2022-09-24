@@ -49,10 +49,16 @@ function FilterNumeric() {
     });
   };
 
-  const removeFilter = ({ column: removed, comparison, value }) => {
-    setColumns((prev) => ([...prev, removed]));
-    setFilterNum({ column: removed, comparison: 'maior que', value: 0 });
-    removeFilters({ removed, comparison, value });
+  const removeFilter = ({ column: removed }) => {
+    setColumns((prevState) => ([
+      ...prevState,
+      removed,
+    ]));
+    setFilterNum({
+      column: removed,
+      comparison: 'maior que',
+      value: 0 });
+    removeFilters(removed);
   };
 
   const removeAllFilters = () => {
@@ -89,7 +95,9 @@ function FilterNumeric() {
           name="value"
           value={ filterNumeric.value }
         />
-        <button type="submit" data-testid="button-filter">Filtrar </button>
+        <button type="submit" data-testid="button-filter">
+          Filtrar
+        </button>
       </form>
 
       <button

@@ -9,7 +9,7 @@ const Provider = ({ children }) => {
   const [planetsFilterNumeric, setPlanetsFilterNumeric] = useState({
     filterByNumericValues: [],
   });
-  const [newArray] = useState([]);
+  const [newArray, setNewArray] = useState([]);
 
   useEffect(() => {
     const getPlanets = async () => {
@@ -32,14 +32,8 @@ const Provider = ({ children }) => {
     setPlanetsFilter(filter);
   };
 
-  const handleFilterNumeric = ({ column, comparison, value }) => {
-    setPlanetsFilterNumeric((prevState) => ({
-      filterByNumericValues: [
-        ...prevState.filterByNumericValues,
-        { column, comparison, value },
-      ],
-    }));
-    const filter = planetsFilter.filter((planet) => {
+  const handleFilter = (comparison, column, value, arrayToFilte) => {
+    const filter = arrayToFilte.filter((planet) => {
       switch (comparison) {
       case 'maior que':
         return Number(planet[column]) > value;
@@ -51,18 +45,42 @@ const Provider = ({ children }) => {
         return false;
       }
     });
+    return filter;
+  };
+
+  const handleFilterNumeric = ({ column, comparison, value }) => {
+    setPlanetsFilterNumeric((prevState) => ({
+      filterByNumericValues: [
+        ...prevState.filterByNumericValues,
+        { column, comparison, value },
+      ],
+    }));
+    const filter = handleFilter(comparison, column, value, planetsFilter);
     setPlanetsFilter(filter);
   };
 
-  const removeFilters = ({ removed }) => {
-    setPlanetsFilterNumeric((prev) => ({
-      filterByNumericValues: [
-        ...prev.filterByNumericValues.filter(({ column }) => column !== removed),
-      ],
-    }));
+  const filterFuncRemove = (comparison, column, value) => {
     let arrayCopy = [...newArray];
     if (arrayCopy.length === 0) arrayCopy = [...planets];
-    setPlanetsFilter(arrayCopy);
+    const filter = handleFilter(comparison, column, value, arrayCopy);
+    setNewArray(filter);
+    return filter;
+  };
+
+  const removeFilters = (removed) => {
+    setPlanetsFilterNumeric((prevState) => ({
+      filterByNumericValues: [
+        ...prevState.filterByNumericValues.filter(({ column }) => column !== removed),
+      ],
+    }));
+    const prevStateFilterNum = planetsFilterNumeric.filterByNumericValues
+      .filter(({ column }) => column !== removed);
+    if (prevStateFilterNum.length === 0) return setPlanetsFilter(planets);
+    let nerArrayFilter = [];
+    prevStateFilterNum.forEach((filter) => {
+      nerArrayFilter = filterFuncRemove(filter.comparison, filter.column, filter.value);
+    });
+    setPlanetsFilter(nerArrayFilter);
   };
 
   const removeAll = () => {
